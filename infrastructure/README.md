@@ -1,8 +1,4 @@
-## Public metrics
-
-Public metrics are hosted at: https://grafana.prod.discovery.etcd.io/d/uiLwPyPWk/discoveryserver?orgId=2
-
-## discovery.etcd.io Kubernetes Configurations
+## Kubernetes Configurations
 
 This repo contains the code to provision the infrastructure and the Kubernetes configurations to operate the public discovery.etcd.io service.
 
@@ -52,39 +48,3 @@ To get the public discovery service running, the following releases have to be i
 traffic from beyond the cluster to internal Kubernetes Services. To install follow instructions in [README](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/nginx-ingress/README.md).
 * [certmanager](https://github.com/etcd-io/discovery.etcd.io/tree/master/kubernetes/helm/cert-manager): Is the TLS/SSL certificate management controller, and to
 get it deployed follow the [README](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/cert-manager/README.md).
-* [prometheus-operator](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/prometheus): Used to create/configure/manage Prometheus clusters atop Kubernetes. To install this operator use the instructions [here](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/prometheus/README.md).
-* [etcd-operator](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/etcd-operator): Is used to configure and manage etcd clusters. This is a
-pre-requisite to have configured properly the discoveryserver release. To install it follow instructions in [README](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/etcd-operator/README.md).
-* [discoveryserver](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/discoveryserver): Is a service that bootstrap new etcd clusters using an existing one.
-This service helps when the IPs of your cluster peers are not known ahead of time. To install the release follow instructions in [README](https://github.com/etcd-io/discovery.etcd.io/blob/master/kubernetes/helm/discoveryserver/README.md).
-
-![block diagram of architecture](img/arch.svg)
-
-## Debugging
-
-**Hit the discovery service via kubectl proxy**
-
-```
-kubectl proxy
-curl http://localhost:8001/api/v1/namespaces/default/services/discoveryserver/proxy/new
-```
-
-**Execute etcdctl on the cluster**
-
-```
-kubectl exec -it $(kubectl get pods -l app=etcd -o jsonpath='{.items[0].metadata.name}')  -- /usr/local/bin/etcdctl watch '' --prefix
-```
-
-**Access prometheus**
-
-Ensure prometheus's externalURL is set to the right path
-
-```
-kubectl edit prometheus prometheus-operator-prometheus
-```
-
-```
-kubectl proxy
-```
-
-Visit http://localhost:8001/api/v1/namespaces/default/services/prometheus-operated:web/proxy
