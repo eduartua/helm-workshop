@@ -1,0 +1,49 @@
+alertmanager:
+  enabled: true
+
+  config:
+    route:
+      group_by: [ 'job' ]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+    receivers:
+      - name: 'null'
+    templates:
+      - '/etc/alertmanager/config/*.tmpl'
+
+  ingress:
+    enabled: false
+    annotations: { }
+
+    labels: { }
+    hosts: [ ]
+    paths: [ ]
+    # - /
+    tls: [ ]
+    # - secretName: alertmanager-general-tls
+    #   hosts:
+    #   - alertmanager.example.com
+
+    ## Configuration for Alertmanager secret
+    ##
+    secret:
+      annotations: { }
+
+  storage:
+   volumeClaimTemplate:
+     spec:
+       storageClassName: standard
+       accessModes: ["ReadWriteOnce"]
+       resources:
+         requests:
+           storage: 50Gi
+     selector: {}
+
+grafana:
+  enabled: true
